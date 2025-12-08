@@ -1,5 +1,5 @@
 Flask>=2.3.3,<3.0
-Flask-Login==0.7.0
+Flask-Login==0.6.3
 Flask-Migrate==4.0.4
 Flask-WTF==1.1.1
 psycopg2-binary==2.9.9
@@ -10,3 +10,4 @@ gunicorn==21.2.0
 bcrypt==4.0.1
 Pillow==10.0.0
 boto3==1.30.0
+
