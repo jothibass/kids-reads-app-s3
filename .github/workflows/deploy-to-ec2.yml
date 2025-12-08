@@ -54,18 +54,25 @@ jobs:
           script: |
             set -e
             cd "${{ secrets.EC2_DEPLOY_PATH }}"
-            # prefer top-level script if present, otherwise run from deploy_scripts/
-            if [ -x ./remote_deploy.sh ]; then
-              echo "Running ./remote_deploy.sh"
-              ./remote_deploy.sh kids-reads-app.zip
-            elif [ -x ./deploy_scripts/remote_deploy.sh ]; then
-              echo "Running ./deploy_scripts/remote_deploy.sh"
-              chmod +x ./deploy_scripts/remote_deploy.sh
-              ./deploy_scripts/remote_deploy.sh kids-reads-app.zip
-            else
-              echo "remote_deploy.sh not found in root or deploy_scripts/; listing directory for debugging"
-              ls -la
-              ls -la deploy_scripts || true
-              exit 1
-            fi
+ 		 # If remote_deploy.sh exists in root, ensure executable and run
+	   if [ -f ./remote_deploy.sh ]; then
+ 	    echo "Found remote_deploy.sh in root; making executable and running"
+ 	    chmod +x ./remote_deploy.sh || true
+ 	    ./remote_deploy.sh kids-reads-app.zip
+            exit $?
+           fi
+
+  # If present under deploy_scripts/, ensure executable and run from there
+         if [ -f ./deploy_scripts/remote_deploy.sh ]; then
+          echo "Found deploy_scripts/remote_deploy.sh; making executable and running"
+          chmod +x ./deploy_scripts/remote_deploy.sh || true
+          ./deploy_scripts/remote_deploy.sh kids-reads-app.zip
+         exit $?
+         fi
+
+  # Fallback: debug listing and fail
+       echo "remote_deploy.sh not found in expected locations; listing directory for debugging"
+       ls -la
+       ls -la deploy_scripts || true
+       exit 1
 
