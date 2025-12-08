@@ -1,0 +1,14 @@
+# Example systemd unit: place at /etc/systemd/system/kids-reads.service (edit paths)
+[Unit]
+Description=Gunicorn instance to serve kids-reads
+After=network.target
+
+[Service]
+User=ubuntu
+Group=www-data
+WorkingDirectory=/home/ubuntu/deploy/app_deploy   # update to your deploy path
+Environment="PATH=/home/ubuntu/deploy/app_deploy/venv/bin"
+ExecStart=/home/ubuntu/deploy/app_deploy/venv/bin/gunicorn --workers 3 --bind 127.0.0.1:8000 wsgi:app
+
+[Install]
+WantedBy=multi-user.target

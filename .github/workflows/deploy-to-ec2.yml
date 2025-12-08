@@ -1,0 +1,58 @@
+name: Deploy to EC2 on push
+
+on:
+  push:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    env:
+      ZIP_NAME: kids-reads-app.zip
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create zip artifact for deploy
+        run: |
+          git rev-parse --short HEAD > .deploy_revision
+          zip -r $ZIP_NAME . -x ".git/*" -x ".github/*" -x "venv/*" -x "instance/*" -x "__pycache__/*"
+
+      - name: Copy zip to EC2 via SCP
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          port: ${{ secrets.EC2_SSH_PORT || 22 }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "kids-reads-app.zip"
+          target: ${{ secrets.EC2_DEPLOY_PATH }}
+
+      - name: Copy remote deploy script to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          port: ${{ secrets.EC2_SSH_PORT || 22 }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "deploy_scripts/remote_deploy.sh"
+          target: ${{ secrets.EC2_DEPLOY_PATH }}
+
+      - name: SSH and run remote deploy script
+        uses: appleboy/ssh-action@v0.1.9
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          port: ${{ secrets.EC2_SSH_PORT || 22 }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            set -e
+            cd "${{ secrets.EC2_DEPLOY_PATH }}"
+            chmod +x ./remote_deploy.sh
+            ./remote_deploy.sh kids-reads-app.zip

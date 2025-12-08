@@ -1,0 +1,11 @@
+name: Deploy to EC2 (manual)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: This workflow is a placeholder. Configure your own SSH deploy steps.
+        run: echo "Add SSH deploy steps here."

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Add Entry</h2>
+<form method="post" enctype="multipart/form-data">
+  {{ form.hidden_tag() }}
+  <div class="mb-3">
+    {{ form.title.label }} {{ form.title(class="form-control") }}
+  </div>
+  <div class="mb-3">
+    {{ form.type.label }} {{ form.type(class="form-select") }}
+  </div>
+  <div class="mb-3">
+    {{ form.notes.label }} {{ form.notes(class="form-control", rows="4") }}
+  </div>
+  <div class="mb-3">
+    {{ form.interests.label }} {{ form.interests(class="form-control") }}
+  </div>
+  <div class="mb-3">
+    {{ form.photo.label }} {{ form.photo(class="form-control") }}
+  </div>
+  <div class="mb-3 form-check">
+    {{ form.published() }} {{ form.published.label }}
+  </div>
+  {{ form.submit(class="btn btn-primary") }}
+</form>
+{% endblock %}

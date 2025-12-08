@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Your Dashboard</h2>
+<p><a href="{{ url_for('main.add_entry') }}" class="btn btn-success">Add Entry</a></p>
+<table class="table">
+  <thead><tr><th>Title</th><th>Type</th><th>Published</th><th>Actions</th></tr></thead>
+  <tbody>
+    {% for e in entries %}
+    <tr>
+      <td>{{ e.title }}</td>
+      <td>{{ e.type }}</td>
+      <td>{{ 'Yes' if e.published else 'No' }}</td>
+      <td></td>
+    </tr>
+    {% else %}
+    <tr><td colspan="4">No entries yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
