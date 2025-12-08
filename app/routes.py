@@ -99,3 +99,35 @@ def uploaded_file(key):
     abort(404)
 
     return send_from_directory(current_app.config['UPLOAD_FOLDER'], filename)
+
+@bp.route('/admin/pending')
+@login_required
+def admin_pending():
+    if not current_user.is_admin():
+        abort(403)
+    pending = Entry.query.filter_by(publish_requested=True, published=False).all()
+    return render_template('admin_pending.html', entries=pending)
+
+@bp.route('/admin/approve/<int:entry_id>', methods=['POST'])
+@login_required
+def admin_approve(entry_id):
+    if not current_user.is_admin():
+        abort(403)
+    e = Entry.query.get_or_404(entry_id)
+    e.published = True
+    e.publish_requested = False
+    db.session.commit()
+    flash("Approved!")
+    return redirect(url_for('main.admin_pending'))
+
+@bp.route('/admin/reject/<int:entry_id>', methods=['POST'])
+@login_required
+def admin_reject(entry_id):
+    if not current_user.is_admin():
+        abort(403)
+    e = Entry.query.get_or_404(entry_id)
+    e.publish_requested = False
+    db.session.commit()
+    flash("Rejected!")
+    return redirect(url_for('main.admin_pending'))
+

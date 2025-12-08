@@ -9,9 +9,11 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     display_name = db.Column(db.String(120))
     password_hash = db.Column(db.String(128), nullable=False)
+    role = db.Column(db.String(20), default='kid')  # 'kid' or 'admin'
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    entries = db.relationship('Entry', backref='user', lazy='dynamic')
+    def is_admin(self):
+        return self.role == 'admin'
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -32,5 +34,7 @@ class Entry(db.Model):
     notes = db.Column(db.Text)
     photo_filename = db.Column(db.String(255))
     interest_tags = db.Column(db.String(255))
-    published = db.Column(db.Boolean, default=False)
+    published = db.Column(db.Boolean, default=False)       # visible to public
+    publish_requested = db.Column(db.Boolean, default=False) # kids request
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+

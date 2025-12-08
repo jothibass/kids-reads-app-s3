@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Pending Publish Requests</h2>
+<table class="table">
+  <thead><tr><th>Title</th><th>By</th><th>Type</th><th>Requested</th><th>Actions</th></tr></thead>
+  <tbody>
+    {% for e in entries %}
+    <tr>
+      <td>{{ e.title }}</td>
+      <td>{{ e.user.display_name or e.user.username }}</td>
+      <td>{{ e.type }}</td>
+      <td>{{ e.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+      <td>
+        <form method="post" action="{{ url_for('main.admin_approve', entry_id=e.id) }}" style="display:inline">
+          <button class="btn btn-success btn-sm" type="submit">Approve</button>
+        </form>
+        <form method="post" action="{{ url_for('main.admin_reject', entry_id=e.id) }}" style="display:inline">
+          <button class="btn btn-danger btn-sm" type="submit">Reject</button>
+        </form>
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="5">No pending entries.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
