@@ -4,7 +4,7 @@ Simple Flask app for kids to record books, trips, activities, upload photos, and
 
 ## Quick start (EC2)
 
-1. Clone repo on EC2.
+1. Clone repo on EC2.....
 2. Create a Python venv and install requirements:
    ```
    python3 -m venv venv
