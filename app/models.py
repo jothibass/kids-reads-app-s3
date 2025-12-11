@@ -5,11 +5,20 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
+
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    display_name = db.Column(db.String(120))
-    password_hash = db.Column(db.String(128), nullable=False)
-    role = db.Column(db.String(20), default='kid')  # 'kid' or 'admin'
+
+    # If your table uses 'username' keep it; if it uses 'name', keep that too.
+    # Include both if you want to support either (they can both map to DB cols if present).
+    username = db.Column(db.String(80), unique=True, nullable=True)   # optional, keep if your app uses it
+    name = db.Column(db.String(80), nullable=True)                     # optional, keep if your DB has 'name'
+    display_name = db.Column(db.String(120), nullable=True)
+
+    # *** Add this email column to match the RDS schema (NOT NULL in your DB) ***
+    email = db.Column(db.String(120), unique=True, nullable=False)
+
+    password_hash = db.Column(db.String(256), nullable=False)
+    role = db.Column(db.String(20), default='kid')
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     def is_admin(self):
@@ -24,6 +33,7 @@ class User(UserMixin, db.Model):
 @login.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
 
 class Entry(db.Model):
     __tablename__ = 'entries'
