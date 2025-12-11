@@ -21,6 +21,8 @@ class User(UserMixin, db.Model):
     role = db.Column(db.String(20), default='kid')
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
+    entries = db.relationship('Entry', backref='user', lazy='dynamic')
+
     def is_admin(self):
         return self.role == 'admin'
 
