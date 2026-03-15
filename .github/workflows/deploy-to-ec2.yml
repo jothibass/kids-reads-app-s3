@@ -49,9 +49,6 @@ jobs:
           source: "deploy_scripts/remote_deploy.sh"
           target: ${{ secrets.EC2_DEPLOY_PATH }}
 
-      - name: Get AWS Account ID
-          run: |
-            aws sts get-caller-identity
             
       - name: SSH and run remote deploy script
         uses: appleboy/ssh-action@v0.1.9
