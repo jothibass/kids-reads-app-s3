@@ -85,9 +85,9 @@ jobs:
             ls -la deploy_scripts || true
 
             exit 1
-- name: Display EC2 Host Information
-  run: |
-    echo "Deploying to EC2 Host: ${{ secrets.EC2_HOST }}"
-    echo "SSH Port: ${{ secrets.EC2_SSH_PORT || 22 }}"
-    echo "Deploy User: ${{ secrets.EC2_USER }}"
-    echo "Deploy Path: ${{ secrets.EC2_DEPLOY_PATH }}"
+      - name: Display EC2 Host Information
+        run: |
+          echo "Deploying to EC2 Host: ${{ secrets.EC2_HOST }}"  
+          echo "SSH Port: ${{ secrets.EC2_SSH_PORT || 22 }}"
+          echo "Deploy User: ${{ secrets.EC2_USER }}"
+          echo "Deploy Path: ${{ secrets.EC2_DEPLOY_PATH }}"
